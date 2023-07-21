@@ -5,9 +5,15 @@ import { useCallback,useState } from "react"
 import MenuItem from "./MenuItem"
 import useRegisterModal from "@/app/hooks/useRegisterModal"
 import useLoginModal from "@/app/hooks/useLoginModal"
+import { signOut } from "next-auth/react"
+import { User } from "@prisma/client"
+
+interface UserMenuProps {
+    currentUser?: User | null
+}
 
 
-const UserMenu = () => {
+const UserMenu: React.FC<UserMenuProps> = ({currentUser}) => {
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isOpen,setIsOpen] = useState(false);
@@ -38,7 +44,36 @@ const UserMenu = () => {
             <div className="absolute rounded-xl shadow-md right-0 top-12 text-sm w-[40vw] md:w-3/4
             bg-white overflow-hidden">
                 <div className="flex flex-col cursor-pointer">
-                    <>
+                    {currentUser ? (
+                        <>
+                        <MenuItem
+                            onClick={() => {}}
+                            label= "My rentals"
+                        />
+                        <MenuItem
+                            onClick={() => {}}
+                            label= "My favorites"
+                        />
+                        <MenuItem
+                            onClick={() => {}}
+                            label= "My Reservations"
+                        />
+                        <MenuItem
+                            onClick={() => {}}
+                            label= "My Cars"
+                        />
+                        <MenuItem
+                            onClick={() => {}}
+                            label= "Rent my vehicle"
+                        />
+                        <hr />
+                        <MenuItem
+                            onClick={() => signOut()}
+                            label= "Logout"
+                        />
+                    </>
+                    ) : (
+                        <>
                         <MenuItem
                             onClick={loginModal.onOpen}
                             label= "Login"
@@ -48,6 +83,7 @@ const UserMenu = () => {
                             label= "Sign Up"
                         />
                     </>
+                    )}
                 </div>
             </div>
         )}

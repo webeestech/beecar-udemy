@@ -4,6 +4,8 @@ import axios from "axios";
 import {FaUserSecret} from "react-icons/fa";
 import {FcGoogle} from "react-icons/fc";
 import { useCallback,useState } from "react";
+import { signIn} from "next-auth/react";
+import { useRouter} from "next/navigation";
 import { FieldValues,SubmitHandler,useForm } from "react-hook-form";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import Modal from "./Modal";
@@ -15,6 +17,7 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 
 const LoginModal = () => {
 
+    const router = useRouter();
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isLoading,setIsLoading] = useState(false);
@@ -25,7 +28,6 @@ const LoginModal = () => {
         }
     } = useForm<FieldValues>({
         defaultValues: {
-            name: '',
             email: '',
             password: '',
         }
@@ -34,35 +36,34 @@ const LoginModal = () => {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
 
-        axios.post('/api/register',data)
-        .then(() => {
-            registerModal.onClose()
-        })
-        .catch((error) => {
-            toast.error('Something went wrong!')
-        })
-        .finally(() => {
-            setIsLoading(false);
-        })
+       signIn('credentials',{
+        ...data,
+        redirect: false
+       })
+       .then((callback) => {
+        setIsLoading(false);
+
+        if(callback?.ok){
+            toast.success('You are logged in');
+            router.refresh();
+            loginModal.onClose();
+        }
+
+        if (callback?.error){
+            toast.error(callback.error);
+        }
+       })
     }
 
     const bodyContent = (
         <div className="flex flex-col gap-4">
             <Heading 
-                title="Welcome to BeeCar"
-                subtitle="Create an account"
+                title="Welcome back to BeeCar"
+                subtitle="Login to your account"
             />
             <Input 
                 id="email"
                 label="Email"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-            />
-            <Input 
-                id="name"
-                label="Name"
                 disabled={isLoading}
                 register={register}
                 errors={errors}

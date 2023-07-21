@@ -1,3 +1,4 @@
+import getCurrentUser from './actions/getCurrentUser'
 import ClientOnly from './components/ClientOnly'
 import LoginModal from './components/modals/LoginModal'
 import Modal from './components/modals/Modal'
@@ -14,11 +15,12 @@ export const metadata = {
   description: 'Easiest way to rent cars',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const currentUser = await getCurrentUser();
   return (
     <html lang="en">
       <body className={nunito.className}>
@@ -26,7 +28,7 @@ export default function RootLayout({
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
-          <Navbar />
+          <Navbar currentUser={currentUser}/>
         </ClientOnly>
         {children}
         </body>
