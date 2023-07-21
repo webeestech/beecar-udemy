@@ -6,10 +6,10 @@ import MenuItem from "./MenuItem"
 import useRegisterModal from "@/app/hooks/useRegisterModal"
 import useLoginModal from "@/app/hooks/useLoginModal"
 import { signOut } from "next-auth/react"
-import { User } from "@prisma/client"
+import { SafeUser } from "@/app/types"
 
 interface UserMenuProps {
-    currentUser?: User | null
+    currentUser?: SafeUser | null
 }
 
 
