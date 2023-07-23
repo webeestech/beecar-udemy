@@ -10,6 +10,7 @@ import { FieldValues,SubmitHandler,useForm } from "react-hook-form";
 import CountrySelect from "../inputs/CountrySelect";
 import Map from "../Map";
 import dynamic from "next/dynamic";
+import Counter from "../inputs/Counter";
 
 enum STEPS {
     CATEGORY = 0,
@@ -42,6 +43,9 @@ const RentModal = () => {
 
    const category= watch('category');
    const location = watch('location');
+   const passangerCount = watch('passangerCount');
+   const seatCount = watch('seatCount');
+   const doorCount = watch('doorCount');
 
    const Map = useMemo(() => dynamic(() => import('../Map'),{
     ssr:false
@@ -112,6 +116,37 @@ const RentModal = () => {
                     onChange={(value) => setCustomValue('location',value)}
                 />
                 <Map center={location?.latlng} />
+            </div>
+        )
+    }
+
+    if (step === STEPS.INFO) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                    title="More information about your vehicle"
+                    subtitle="Please give the right numbers"
+                />
+                <Counter
+                    title="Passanger"
+                    subtitle="How many passangers do you allow?"
+                    value={passangerCount}
+                    onChange={(value) => setCustomValue('passangerCount',value)}
+                />
+                <hr />
+                <Counter
+                    title="Seats"
+                    subtitle="How many seats do you have?"
+                    value={seatCount}
+                    onChange={(value) => setCustomValue('seatCount',value)}
+                />
+                <hr />
+                <Counter
+                    title="Door"
+                    subtitle="How many doors do you have?"
+                    value={doorCount}
+                    onChange={(value) => setCustomValue('doorCount',value)}
+                />
             </div>
         )
     }
